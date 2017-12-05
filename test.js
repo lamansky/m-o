@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {has, get, set, delete: del} = require('.')
+const {has, hasIn, get, getIn, set, edit, delete: del, reconstruct, entries, keys, values} = require('.')
 
 describe('set()', function () {
   it('should set a string key on a Map', function () {
@@ -19,15 +19,16 @@ describe('set()', function () {
   it('should set a symbol key on a Map', function () {
     const key = Symbol('key')
     const map = new Map()
-    set(map, key, 'world')
-    assert.strictEqual(map.get(key), 'world')
+    set(map, key, 'value')
+    assert.strictEqual(map.get(key), 'value')
   })
 
   it('should set a symbol key on an Object', function () {
     const key = Symbol('key')
     const obj = {}
-    set(obj, key, 'world')
-    assert.strictEqual(obj[key], 'world')
+    set(obj, key, 'value')
+    assert.strictEqual(obj[key], 'value')
+  })
 
   it('should return the Map', function () {
     const map = new Map()
@@ -64,9 +65,11 @@ describe('has()', function () {
   it('should return false for an Object prototype property', function () {
     assert(!has({}, 'hasOwnProperty'))
   })
+})
 
-  it('should return true for an Object prototype property if parameter 3 is true', function () {
-    assert(has({}, 'toString', true))
+describe('hasIn()', function () {
+  it('should return true for an Object prototype property', function () {
+    assert(hasIn({}, 'toString'))
   })
 })
 
@@ -94,9 +97,11 @@ describe('get()', function () {
   it('should return undefined for an Object prototype property', function () {
     assert.strictEqual(typeof get({}, 'hasOwnProperty'), 'undefined')
   })
+})
 
-  it('should return an Object prototype property if parameter 3 is true', function () {
-    assert.strictEqual(typeof get({}, 'toString', true), 'function')
+describe('getIn()', function () {
+  it('should return an Object prototype property', function () {
+    assert.strictEqual(typeof getIn({}, 'toString'), 'function')
   })
 })
 
@@ -123,5 +128,141 @@ describe('delete()', function () {
 
   it('should return false when deleting a prototype property on an Object', function () {
     assert.strictEqual(del({}, 'toString'), false)
+  })
+})
+
+describe('edit()', function () {
+  it('should pass the existing Map value as an argument to the callback', function () {
+    const map = new Map()
+    set(map, 'hello', 'world')
+    edit(map, 'hello', value => { assert.strictEqual(value, 'world') })
+  })
+
+  it('should pass the existing Object value as an argument to the callback', function () {
+    edit({hello: 'world'}, 'hello', value => { assert.strictEqual(value, 'world') })
+  })
+
+  it('should pass undefined to the callback if no Map value', function () {
+    edit(new Map(), 'nonexistent', value => { assert.strictEqual(typeof value, 'undefined') })
+  })
+
+  it('should pass undefined to the callback if no Object value', function () {
+    edit({}, 'nonexistent', value => { assert.strictEqual(typeof value, 'undefined') })
+  })
+
+  it('should modify the Map value with the callback return value', function () {
+    const map = new Map([['hello', 'world']])
+    edit(map, 'hello', value => value + '!')
+    assert.strictEqual(map.get('hello'), 'world!')
+  })
+
+  it('should modify the Object value with the callback return value', function () {
+    const obj = {hello: 'world'}
+    edit(obj, 'hello', value => value + '!')
+    assert.strictEqual(obj.hello, 'world!')
+  })
+})
+
+describe('reconstruct()', function () {
+  it('should construct a Map if a Map is provided', function () {
+    assert.strictEqual(reconstruct(new Map()).constructor, Map)
+  })
+
+  it('should construct with the Map subclass of the object provided', function () {
+    class XMap extends Map {}
+    assert.strictEqual(reconstruct(new XMap()).constructor, XMap)
+  })
+
+  it('should construct an Object if an Object is provided', function () {
+    assert.strictEqual(reconstruct({}).constructor, Object)
+  })
+
+  it('should construct a Map containing the given entries', function () {
+    const map1 = new Map([['a', 1]])
+    const map2 = reconstruct(map1, map1.entries())
+    assert.notStrictEqual(map1, map2)
+    assert.strictEqual(map2.size, 1)
+    assert.strictEqual(map2.get('a'), 1)
+  })
+
+  it('should construct an Object containing the given entries', function () {
+    const obj1 = {a: 1}
+    const obj2 = reconstruct(obj1, Object.entries(obj1))
+    assert.notStrictEqual(obj1, obj2)
+    assert.strictEqual(Object.keys(obj2).length, 1)
+    assert.strictEqual(obj2.a, 1)
+  })
+})
+
+describe('entries()', function () {
+  it('should return an iterable for a Map', function () {
+    assert.strictEqual(typeof entries(new Map())[Symbol.iterator], 'function')
+  })
+
+  it('should return an iterable for an Object', function () {
+    assert.strictEqual(typeof entries({})[Symbol.iterator], 'function')
+  })
+
+  it('should return the appropriate number of entries', function () {
+    assert.strictEqual(Array.from(entries({a: 1})).length, 1)
+  })
+
+  it('should iterate two-element array values for Maps', function () {
+    const entry = Array.from(entries(new Map([['a', 1]])))[0]
+    assert(Array.isArray(entry))
+    assert.strictEqual(entry[0], 'a')
+    assert.strictEqual(entry[1], 1)
+  })
+
+  it('should iterate two-element array values for Objects', function () {
+    const entry = Array.from(entries({a: 1}))[0]
+    assert(Array.isArray(entry))
+    assert.strictEqual(entry[0], 'a')
+    assert.strictEqual(entry[1], 1)
+  })
+})
+
+describe('keys()', function () {
+  it('should return an iterable for a Map', function () {
+    assert.strictEqual(typeof keys(new Map())[Symbol.iterator], 'function')
+  })
+
+  it('should return an iterable for an Object', function () {
+    assert.strictEqual(typeof keys({})[Symbol.iterator], 'function')
+  })
+
+  it('should return the appropriate number of keys', function () {
+    assert.strictEqual(Array.from(keys({a: 1})).length, 1)
+  })
+
+  it('should iterate the keys of a Map', function () {
+    const key = Symbol('key')
+    assert.strictEqual(Array.from(keys(new Map([[key, 1]])))[0], key)
+  })
+
+  it('should iterate the keys of an Object', function () {
+    assert.strictEqual(Array.from(keys({a: 1}))[0], 'a')
+  })
+})
+
+describe('values()', function () {
+  it('should return an iterable for a Map', function () {
+    assert.strictEqual(typeof values(new Map())[Symbol.iterator], 'function')
+  })
+
+  it('should return an iterable for an Object', function () {
+    assert.strictEqual(typeof values({})[Symbol.iterator], 'function')
+  })
+
+  it('should return the appropriate number of values', function () {
+    assert.strictEqual(Array.from(values({a: 1})).length, 1)
+  })
+
+  it('should iterate the values of a Map', function () {
+    assert.strictEqual(Array.from(values(new Map([['a', 1]])))[0], 1)
+  })
+
+  it('should iterate the values of an Object', function () {
+    assert.strictEqual(Array.from(values({a: 1}))[0], 1)
   })
 })

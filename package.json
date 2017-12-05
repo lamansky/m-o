@@ -1,14 +1,17 @@
 {
   "name": "m-o",
   "version": "1.0.0",
-  "description": "has/get/set/delete methods that work on both Maps and Objects",
+  "description": "Functions that work on both Maps and Objects: has, get, set, delete, entries, keys, values, etc.",
   "keywords": [
     "Map",
     "object",
     "has",
     "get",
     "set",
-    "delete"
+    "delete",
+    "entries",
+    "keys",
+    "values"
   ],
   "author": "John Lamansky",
   "license": "MIT",
@@ -22,7 +25,8 @@
   "dependencies": {
     "get-own-property": "^1.0.0",
     "if-else-throw": "^1.0.0",
-    "is-object": "^1.0.1"
+    "is-object": "^1.0.1",
+    "new-object": "^3.0.0"
   },
   "devDependencies": {
     "eslint-config-lamansky": "^1.0.0",
