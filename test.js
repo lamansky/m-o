@@ -28,6 +28,15 @@ describe('set()', function () {
     const obj = {}
     set(obj, key, 'world')
     assert.strictEqual(obj[key], 'world')
+
+  it('should return the Map', function () {
+    const map = new Map()
+    assert.strictEqual(set(map, '123', '456'), map)
+  })
+
+  it('should return the Object', function () {
+    const obj = {}
+    assert.strictEqual(set(obj, '123', '456'), obj)
   })
 })
 
