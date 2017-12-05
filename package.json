@@ -1,6 +1,6 @@
 {
   "name": "m-o",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Functions that work on both Maps and Objects: has, get, set, delete, entries, keys, values, etc.",
   "keywords": [
     "Map",
