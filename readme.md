@@ -2,7 +2,7 @@
 
 A collection of functions that work on both Maps and Objects, letting you write code that can handle either, if that’s your M.O.
 
-The functions are: `has`, `hasIn`, `get`, `getIn`, `set`, `edit`, `delete`, `reconstruct`, `entries`, `keys`, and `values`.
+The functions are: `has`, `hasIn`, `get`, `getIn`, `set`, `edit`, `delete`, `reconstruct`, `entries`, `entriesArray`, `keys`, `keysArray`, `values`, and `valuesArray`.
 
 ## Installation
 
@@ -50,8 +50,14 @@ mo.delete(obj, 'nonexistent') // false
 
 // Entries
 mo.entries(map) // MapIterator
-mo.entries(obj) // []
+mo.entries(obj) // ArrayIterator
 ```
+
+## Entries, Keys, and Values
+
+The `Map` prototype has `entries()`, `keys()`, and `values()` methods which return iterators, whereas the global functions `Object.entries()`, `Object.keys()`, and `Object.values()` return arrays. The `m-o` module lets you remain consistent regardless of which type you’re dealing with. Use the `entries()`, `keys()`, and `values()` methods if you want iterators, and use `entriesArray()`, `keysArray()`, and `valuesArray()` if you want arrays.
+
+## Accessing Prototype Properties
 
 By default, `has` and `get` treat an object like a dictionary and therefore only access its own properties. If you want to access object prototype properties as well, use the `hasIn` or `getIn` methods instead. (With Maps, behavior is the same regardless of which set of methods you use.)
 

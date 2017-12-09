@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {has, hasIn, get, getIn, set, edit, delete: del, reconstruct, entries, keys, values} = require('.')
+const {has, hasIn, get, getIn, set, edit, delete: del, reconstruct, entries, entriesArray, keys, keysArray, values, valuesArray} = require('.')
 
 describe('set()', function () {
   it('should set a string key on a Map', function () {
@@ -195,12 +195,12 @@ describe('reconstruct()', function () {
 })
 
 describe('entries()', function () {
-  it('should return an iterable for a Map', function () {
-    assert.strictEqual(typeof entries(new Map())[Symbol.iterator], 'function')
+  it('should return an iterator for a Map', function () {
+    assert.strictEqual(typeof entries(new Map()).next, 'function')
   })
 
-  it('should return an iterable for an Object', function () {
-    assert.strictEqual(typeof entries({})[Symbol.iterator], 'function')
+  it('should return an iterator for an Object', function () {
+    assert.strictEqual(typeof entries({}).next, 'function')
   })
 
   it('should return the appropriate number of entries', function () {
@@ -222,13 +222,23 @@ describe('entries()', function () {
   })
 })
 
-describe('keys()', function () {
-  it('should return an iterable for a Map', function () {
-    assert.strictEqual(typeof keys(new Map())[Symbol.iterator], 'function')
+describe('entriesArray()', function () {
+  it('should return an array for a Map', function () {
+    assert(Array.isArray(entriesArray(new Map())))
   })
 
-  it('should return an iterable for an Object', function () {
-    assert.strictEqual(typeof keys({})[Symbol.iterator], 'function')
+  it('should return an array for an Object', function () {
+    assert(Array.isArray(entriesArray({})))
+  })
+})
+
+describe('keys()', function () {
+  it('should return an iterator for a Map', function () {
+    assert.strictEqual(typeof keys(new Map()).next, 'function')
+  })
+
+  it('should return an iterator for an Object', function () {
+    assert.strictEqual(typeof keys({}).next, 'function')
   })
 
   it('should return the appropriate number of keys', function () {
@@ -245,13 +255,23 @@ describe('keys()', function () {
   })
 })
 
-describe('values()', function () {
-  it('should return an iterable for a Map', function () {
-    assert.strictEqual(typeof values(new Map())[Symbol.iterator], 'function')
+describe('keysArray()', function () {
+  it('should return an array for a Map', function () {
+    assert(Array.isArray(keysArray(new Map())))
   })
 
-  it('should return an iterable for an Object', function () {
-    assert.strictEqual(typeof values({})[Symbol.iterator], 'function')
+  it('should return an array for an Object', function () {
+    assert(Array.isArray(keysArray({})))
+  })
+})
+
+describe('values()', function () {
+  it('should return an iterator for a Map', function () {
+    assert.strictEqual(typeof values(new Map()).next, 'function')
+  })
+
+  it('should return an iterator for an Object', function () {
+    assert.strictEqual(typeof values({}).next, 'function')
   })
 
   it('should return the appropriate number of values', function () {
@@ -264,5 +284,15 @@ describe('values()', function () {
 
   it('should iterate the values of an Object', function () {
     assert.strictEqual(Array.from(values({a: 1}))[0], 1)
+  })
+})
+
+describe('valuesArray()', function () {
+  it('should return an array for a Map', function () {
+    assert(Array.isArray(valuesArray(new Map())))
+  })
+
+  it('should return an array for an Object', function () {
+    assert(Array.isArray(valuesArray({})))
   })
 })
