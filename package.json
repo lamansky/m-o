@@ -20,7 +20,7 @@
   "main": "index.js",
   "files": [],
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=7.0.0"
   },
   "dependencies": {
     "get-own-property": "^1.0.0",
