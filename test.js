@@ -1,7 +1,7 @@
 'use strict'
 
 const assert = require('assert')
-const {has, hasIn, get, getIn, set, edit, delete: del, reconstruct, entries, entriesArray, keys, keysArray, values, valuesArray} = require('.')
+const {has, hasIn, get, getIn, set, edit, delete: del, construct, reconstruct, entries, entriesArray, keys, keysArray, values, valuesArray} = require('.')
 
 describe('set()', function () {
   it('should set a string key on a Map', function () {
@@ -160,6 +160,33 @@ describe('edit()', function () {
     const obj = {hello: 'world'}
     edit(obj, 'hello', value => value + '!')
     assert.strictEqual(obj.hello, 'world!')
+  })
+})
+
+describe('construct()', function () {
+  it('should construct a Map if the Map class is provided', function () {
+    assert.strictEqual(construct(Map).constructor, Map)
+  })
+
+  it('should construct with the Map subclass provided', function () {
+    class XMap extends Map {}
+    assert.strictEqual(construct(XMap).constructor, XMap)
+  })
+
+  it('should construct an Object if the Object class is provided', function () {
+    assert.strictEqual(construct(Object).constructor, Object)
+  })
+
+  it('should construct a Map containing the given entries', function () {
+    const map = construct(Map, [['a', 1]])
+    assert.strictEqual(map.size, 1)
+    assert.strictEqual(map.get('a'), 1)
+  })
+
+  it('should construct an Object containing the given entries', function () {
+    const obj = construct(Object, Object.entries({a: 1}))
+    assert.strictEqual(Object.keys(obj).length, 1)
+    assert.strictEqual(obj.a, 1)
   })
 })
 

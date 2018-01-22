@@ -11,7 +11,8 @@
     "delete",
     "entries",
     "keys",
-    "values"
+    "values",
+    "construct"
   ],
   "author": "John Lamansky",
   "license": "MIT",
